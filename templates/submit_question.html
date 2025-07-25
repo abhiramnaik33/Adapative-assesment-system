@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Submit a Descriptive Question</title>
+    <script src="https://visjs.github.io/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        textarea, input, select { width: 50%; padding: 8px; margin: 5px 0 15px 0; }
+        button, input[type="submit"] { padding: 10px 20px; }
+        #similarity_result { font-weight: bold; margin-top: 10px; }
+        .error { color: red; }
+        .success { color: green; }
+        #topic_network { width: 50%; height: 300px; border: 1px solid lightgray; margin-bottom: 15px; }
+        #selected_topics { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Submit a Descriptive Question</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p class="success">Question submitted successfully! Similarity: {{ similarity }}. Feedback: {{ feedback }}</p>
+    {% endif %}
+
+    <form method="POST" action="/submit">
+        <label for="question_text">Question Text:</label><br>
+        <textarea name="question_text" id="question_text" rows="5" required></textarea><br>
+
+        <label for="difficulty">Difficulty Level:</label><br>
+        <select name="difficulty" id="difficulty" required>
+            <option value="">Select Difficulty</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select><br>
+
+        <label for="bloom_level">Bloom Level:</label><br>
+        <select name="bloom_level" id="bloom_level" required>
+            <option value="">Select Bloom Level</option>
+            <option value="Remember">Remember</option>
+            <option value="Understand">Understand</option>
+            <option value="Apply">Apply</option>
+            <option value="Analyze">Analyze</option>
+            <option value="Evaluate">Evaluate</option>
+            <option value="Create">Create</option>
+        </select><br>
+
+        <label>Select KU nodes from the graph below:</label>
+        <div id="topic_network"></div>
+        <input type="hidden" name="topics" id="topics_input">
+        <p id="selected_topics">Selected Topics: None</p>
+
+        <button type="button" onclick="checkSimilarity()">Check Similarity</button>
+        <span id="similarity_result"></span><br><br>
+
+        <input type="submit" value="Submit Question">
+    </form>
+
+    <script>
+    let selectedTopics = [];
+
+    fetch('/topic_graph')
+        .then(res => res.json())
+        .then(data => {
+         const nodes = new vis.DataSet(data.nodes.map(n => ({
+    id: n.id,
+    label: n.label,
+    fullName: n.fullName || n.label,
+    title: n.fullName || n.label,  // This enables hover tooltip
+    color: { background: '#e0f7fa', border: '#0288d1' }
+})));
+
+
+
+            const edges = new vis.DataSet(data.edges.map(e => ({
+                from: e.source,
+                to: e.target,
+                label: e.relationship
+            })));
+
+            const network = new vis.Network(document.getElementById('topic_network'), { nodes, edges }, {
+                nodes: { shape: 'box', font: { size: 12 } },
+                edges: { arrows: 'to' }
+            });
+
+            network.on('click', params => {
+                if (params.nodes.length > 0) {
+                    const nodeId = params.nodes[0];
+                    const connectedOut = edges.get({ filter: e => e.from === nodeId });
+                    if (connectedOut.length === 0) {
+                        const node = nodes.get(nodeId);
+                        const shortName = node.label;
+                        const fullName = node.fullName;
+
+                        if (!selectedTopics.includes(shortName)) {
+                            selectedTopics.push(shortName);
+                            nodes.update({ id: nodeId, color: { background: '#a5d6a7', border: '#2e7d32' } });
+                        } else {
+                            selectedTopics = selectedTopics.filter(t => t !== shortName);
+                            nodes.update({ id: nodeId, color: { background: '#e0f7fa', border: '#0288d1' } });
+                        }
+
+                        document.getElementById('topics_input').value = selectedTopics.join(',');
+                        const fullNames = selectedTopics.map(sn => nodes.get(sn).fullName);
+                        document.getElementById('selected_topics').innerText = `Selected Topics: ${fullNames.join(', ') || 'None'}`;
+                    }
+                }
+            });
+        });
+
+    function checkSimilarity() {
+        const questionText = document.getElementById('question_text').value;
+        if (!questionText) return document.getElementById('similarity_result').innerText = "⚠️ Enter a question.";
+        fetch('/check_similarity', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question_text: questionText })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const score = data.similarity_score;
+            const result = score > 0.8 ? `⚠️ Similarity Score: ${score} (Too similar)` : `✅ Similarity Score: ${score}`;
+            document.getElementById('similarity_result').innerText = result;
+            document.getElementById('similarity_result').style.color = score > 0.8 ? 'red' : 'green';
+        });
+    }
+    </script>
+</body>
+</html>

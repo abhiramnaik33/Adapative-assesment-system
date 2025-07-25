@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submitted Questions</title>
+</head>
+<body>
+    <h2>List of Submitted Questions</h2>
+    {% if questions %}
+        <ul>
+            {% for q in questions %}
+                <li>
+                    <strong>Question:</strong> {{ q.text }}<br>
+                    <strong>Difficulty:</strong> {{ q.difficulty }}<br>
+                    <strong>Bloom Level:</strong> {{ q.bloom }}<br>
+                    <strong>Tags:</strong> {{ q.tags }}<br>
+                    <strong>Gemini Feedback:</strong> {{ q.validation_feedback }} <br><br>
+                  
+                      
+
+                    <hr>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No questions submitted yet.</p>
+    {% endif %}
+</body>
+</html>

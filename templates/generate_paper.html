@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Question Paper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generate Question Paper</h1>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="/generate_paper">
+        <label>Number of Easy Questions:</label>
+        <input type="number" name="easy" value="0" min="0"><br>
+
+        <label>Number of Medium Questions:</label>
+        <input type="number" name="medium" value="0" min="0"><br>
+
+        <label>Number of Hard Questions:</label>
+        <input type="number" name="hard" value="0" min="0"><br>
+
+        <label>Topics/Tags (comma-separated, e.g., Python,Loops):</label>
+        <input type="text" name="tags"><br>
+
+        <label>Bloom Levels (comma-separated, e.g., Remember,Understand):</label>
+        <input type="text" name="bloom_levels"><br>
+
+        <button type="submit">Generate Paper</button>
+    </form>
+    <br>
+    <a href="/">Back to Home</a>
+</body>
+</html>

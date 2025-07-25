@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Question</title>
+</head>
+<body>
+    <h2>Edit Descriptive Question</h2>
+    <form method="POST">
+        <label>Question Text:</label><br>
+        <textarea name="question_text" rows="5" cols="50" required>{{ question.text }}</textarea><br><br>
+
+        <label>Difficulty Level:</label><br>
+        <select name="difficulty" required>
+            <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+            <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+            <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+        </select><br><br>
+
+        <label>Bloom Level:</label><br>
+        <select name="bloom_level" required>
+            <option value="Remember" {% if question.bloom == 'Remember' %}selected{% endif %}>Remember</option>
+            <option value="Understand" {% if question.bloom == 'Understand' %}selected{% endif %}>Understand</option>
+            <option value="Apply" {% if question.bloom == 'Apply' %}selected{% endif %}>Apply</option>
+            <option value="Analyze" {% if question.bloom == 'Analyze' %}selected{% endif %}>Analyze</option>
+            <option value="Evaluate" {% if question.bloom == 'Evaluate' %}selected{% endif %}>Evaluate</option>
+            <option value="Create" {% if question.bloom == 'Create' %}selected{% endif %}>Create</option>
+        </select><br><br>
+
+        <label>Tags:</label><br>
+        <input type="text" name="tags" value="{{ question.tags }}"><br><br>
+
+        <input type="submit" value="Update Question">
+    </form>
+</body>
+</html>

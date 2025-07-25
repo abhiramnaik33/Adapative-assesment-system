@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Question Papers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .section {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .delete-link {
+            color: #dc3545;
+        }
+        .delete-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>All Generated Question Papers</h1>
+
+    <div class="section">
+        {% if question_papers %}
+            {% for paper_detail in question_papers %}
+                <div style="margin-bottom: 20px;">
+                    <h3>Paper ID: {{ paper_detail.paper.id }}</h3>
+                    <p><strong>Requirements:</strong> {{ paper_detail.paper.requirements }}</p>
+                    <p><strong>Tags:</strong> {{ paper_detail.paper.tags }}</p>
+                    <p><strong>Bloom Levels:</strong> {{ paper_detail.paper.bloom_levels }}</p>
+                    <p><strong>Created At:</strong> {{ paper_detail.paper.created_at }}</p>
+                    <p>
+                        <a href="/delete_paper/{{ paper_detail.paper.id }}" class="delete-link" onclick="return confirm('Are you sure you want to delete Paper ID {{ paper_detail.paper.id }}?')">Delete</a>
+                    </p>
+                    <h4>Questions in this Paper:</h4>
+                    {% if paper_detail.questions %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Text</th>
+                                    <th>Difficulty</th>
+                                    <th>Bloom Level</th>
+                                    <th>Tags</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for question in paper_detail.questions %}
+                                    <tr>
+                                        <td>{{ question.id }}</td>
+                                        <td>{{ question.text }}</td>
+                                        <td>{{ question.difficulty }}</td>
+                                        <td>{{ question.bloom }}</td>
+                                        <td>{{ question.tags }}</td>
+                                        <td>{{ question.question_type }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No questions in this paper.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No question papers have been generated yet.</p>
+        {% endif %}
+    </div>
+
+    <a href="/">Back to Home</a>
+</body>
+</html>

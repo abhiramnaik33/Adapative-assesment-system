@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generated Question Paper</title>
+</head>
+<body>
+    <h1>Generated Question Paper (Paper ID: {{ paper_id }})</h1>
+    {% if questions %}
+        <h2>Questions:</h2>
+        <ul>
+            {% for question in questions %}
+                <li>
+                    <strong>ID:</strong> {{ question.id }}<br>
+                    <strong>Text:</strong> {{ question.text }}<br>
+                    <strong>Difficulty:</strong> {{ question.difficulty }}<br>
+                    <strong>Bloom Level:</strong> {{ question.bloom }}<br>
+                    <strong>Tags:</strong> {{ question.tags }}<br>
+                    <a href="/edit/{{ question.id }}">Edit</a>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No questions matched the criteria.</p>
+    {% endif %}
+    <a href="/generate_paper">Generate Another Paper</a>
+</body>
+</html>

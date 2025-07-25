@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - Question Bank</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h2>Admin Panel</h2>
+
+    <form method="GET" action="/admin">
+        <label>Bloom Level:</label>
+        <select name="bloom">
+            <option value="">-- All --</option>
+            <option value="Remember">Remember</option>
+            <option value="Understand">Understand</option>
+            <option value="Apply">Apply</option>
+            <option value="Analyze">Analyze</option>
+            <option value="Evaluate">Evaluate</option>
+            <option value="Create">Create</option>
+        </select>
+
+        <label>Difficulty:</label>
+        <select name="difficulty">
+            <option value="">-- All --</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+
+        <label>Tag:</label>
+        <input type="text" name="tag" placeholder="Search tag" />
+
+        <label>Sort by:</label>
+        <select name="sort">
+            <option value="created_at">Recent</option>
+            <option value="similarity">Similarity</option>
+        </select>
+
+        <input type="submit" value="Filter" />
+    </form>
+
+    <br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Difficulty</th>
+                <th>Bloom Level</th>
+                <th>Tags</th>
+                <th>Validation Feedback</th>
+                <th>Similarity Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr>
+                <td>{{ question.text }}</td>
+                <td>{{ question.difficulty }}</td>
+                <td>{{ question.bloom }}</td>
+                <td>{{ question.tags }}</td>
+                <td>{{ question.validation_feedback }}</td>
+                <td>{{ question.similarity_score }}</td>
+                <td>
+                    <a href="/edit/{{ question.id }}">✏️ Edit</a> |
+                    <a href="/delete/{{ question.id }}">❌ Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div>
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('admin_panel', page=pagination.prev_num) }}">&laquo; Prev</a>
+        {% endif %}
+    
+        {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if p %}
+                {% if p == pagination.page %}
+                    <strong>{{ p }}</strong>
+                {% else %}
+                    <a href="{{ url_for('admin_panel', page=p) }}">{{ p }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+    
+        {% if pagination.has_next %}
+            <a href="{{ url_for('admin_panel', page=pagination.next_num) }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+    
+</body>
+</html>
