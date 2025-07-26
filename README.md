@@ -1,4 +1,4 @@
-# AI-Integrated Adaptive Assessment System  
+# Generative AI for Assessments in Learning Environments 
 A Generative AI–Powered Framework for Outcome-Aligned Question Creation in Computing Education
 
 ## Overview  
