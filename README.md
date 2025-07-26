@@ -35,14 +35,13 @@ The system utilizes context data—such as student activity in e-books, videos, 
 ## Extensibility  
 While currently aligned with the ACM BoK for computing education, the system architecture is flexible and can be adapted to other domain-specific curricula or standardized knowledge models.
 
-## Folder Structure  
-
-instance/ # Configuration and local DB
-static/ # Static assets (CSS, JS)
-templates/ # HTML templates 
-.env # Environment variables (e.g., API keys)
-.gitattributes # Git attributes
-app.py # Entry point for running the Flask app  Core routes, logic, and LLM integration
+## Folder Structure
+- instance/ – Local configuration and DB instance
+- static/ – CSS, JavaScript, and other static files
+- templates/ – Jinja2 HTML templates
+- .env – Environment variables (e.g., API keys, database URIs)
+- .gitattributes – Git attributes file
+- app.py – Main Flask application and route handler
 
 
 
